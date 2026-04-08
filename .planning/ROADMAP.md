@@ -18,7 +18,7 @@ An AI-powered task management tool for Bea Fenol (EP at Ally) to manage tasks fr
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Initialize Next.js project with Clerk auth + Neon connection + middleware
+- [x] 01-01-PLAN.md — Initialize Next.js project with Clerk auth + Neon connection + middleware
 - [ ] 01-02-PLAN.md — Dashboard shell UI (nav with UserButton, tabs, stat cards)
 - [ ] 01-03-PLAN.md — Deploy to Vercel + end-to-end verification
 
