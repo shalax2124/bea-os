@@ -62,8 +62,7 @@ export default function LogTaskPage() {
       if (!res.ok) throw new Error(data.error ?? 'Save failed')
       setSuccess(true)
       setTimeout(() => {
-        router.push('/')
-        router.refresh()
+        window.location.href = '/'
       }, 1000)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
