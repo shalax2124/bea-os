@@ -2,6 +2,8 @@ import { sql } from '@/lib/db'
 import { StatCard } from '@/components/stat-card'
 import { TaskList } from '@/components/task-list'
 
+export const dynamic = 'force-dynamic'
+
 type Task = {
   id: number
   title: string

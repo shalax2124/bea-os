@@ -1,6 +1,8 @@
 import { sql } from '@/lib/db'
 import { ArchivedTaskList } from '@/components/archived-task-list'
 
+export const dynamic = 'force-dynamic'
+
 type Task = {
   id: number
   title: string
