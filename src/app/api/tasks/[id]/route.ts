@@ -3,8 +3,20 @@ import { sql } from '@/lib/db'
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  const numericId = parseInt(id)
   const body = await req.json()
   const { status, priority, title, description, due_date, blocked_on, archived } = body
+
+  // Handle archive toggle separately (boolean doesn't work in COALESCE)
+  if (typeof archived === 'boolean') {
+    const [task] = await sql`
+      UPDATE tasks SET archived = ${archived}, updated_at = NOW()
+      WHERE id = ${numericId}
+      RETURNING *
+    `
+    if (!task) return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+    return NextResponse.json({ task })
+  }
 
   const [task] = await sql`
     UPDATE tasks SET
@@ -14,9 +26,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       priority = COALESCE(${priority ?? null}, priority),
       status = COALESCE(${status ?? null}, status),
       blocked_on = COALESCE(${blocked_on ?? null}, blocked_on),
-      archived = CASE WHEN ${archived ?? null} IS NOT NULL THEN ${archived ?? false} ELSE archived END,
       updated_at = NOW()
-    WHERE id = ${parseInt(id)}
+    WHERE id = ${numericId}
     RETURNING *
   `
 
