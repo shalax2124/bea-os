@@ -128,6 +128,7 @@ type CardTask = {
   due_date: string | null
   priority: 'high' | 'medium' | 'low'
   status: 'todo' | 'in_progress' | 'blocked' | 'done'
+  blocked_on: string | null
 }
 
 const PRIORITY_COLORS = {
@@ -152,6 +153,9 @@ const STATUS_LABELS = {
 
 export function JeffTaskCard({ task, waitDays }: { task: CardTask; waitDays: number }) {
   const [resolving, setResolving] = useState(false)
+  const [followUp, setFollowUp] = useState<string | null>(null)
+  const [generating, setGenerating] = useState(false)
+  const [followUpCopied, setFollowUpCopied] = useState(false)
 
   const today = new Date().toISOString().split('T')[0]
   const isOverdue = task.due_date ? task.due_date < today : false
@@ -171,6 +175,35 @@ export function JeffTaskCard({ task, waitDays }: { task: CardTask; waitDays: num
       body: JSON.stringify({ blocked_on: null, status: 'in_progress' }),
     })
     window.location.reload()
+  }
+
+  async function handleDraftFollowUp() {
+    setGenerating(true)
+    try {
+      const res = await fetch('/api/generate-followup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          taskTitle: task.title,
+          daysWaiting: waitDays,
+          blockedOn: task.blocked_on ?? 'Jeff',
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to generate')
+      const data = await res.json()
+      setFollowUp(data.message ?? '')
+    } catch {
+      setFollowUp('Could not generate follow-up. Please try again.')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  async function handleCopy() {
+    if (!followUp) return
+    await navigator.clipboard.writeText(followUp)
+    setFollowUpCopied(true)
+    setTimeout(() => setFollowUpCopied(false), 2000)
   }
 
   return (
@@ -223,6 +256,49 @@ export function JeffTaskCard({ task, waitDays }: { task: CardTask; waitDays: num
           {resolving ? 'Saving…' : 'Mark Resolved'}
         </button>
       </div>
+
+      {/* Draft follow-up section */}
+      {waitDays >= 3 && (
+        <div className="mt-3 space-y-2">
+          {/* Draft button row */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDraftFollowUp}
+              disabled={generating}
+              className="border border-gray-300 rounded px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            >
+              {generating ? 'Generating…' : 'Draft Follow-up'}
+            </button>
+          </div>
+
+          {/* Generated message */}
+          {followUp !== null && (
+            <div className="space-y-1.5">
+              <textarea
+                readOnly
+                value={followUp}
+                rows={3}
+                className="w-full text-xs bg-gray-50 border border-gray-200 rounded p-2 resize-none text-gray-700 leading-relaxed"
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopy}
+                  className="border border-gray-300 rounded px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  {followUpCopied ? 'Copied!' : 'Copy'}
+                </button>
+                <button
+                  onClick={() => setFollowUp(null)}
+                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Dismiss follow-up"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

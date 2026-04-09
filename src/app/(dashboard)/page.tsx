@@ -4,6 +4,8 @@ import { TaskList } from '@/components/task-list'
 import { TodaysPlan } from '@/components/todays-plan'
 import { ScopeCreepAlert } from '@/components/scope-creep-alert'
 import { TriagePanel } from '@/components/triage-panel'
+import { EodSummary } from '@/components/eod-summary'
+import { AdhocCounter } from '@/components/adhoc-counter'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,6 +71,7 @@ export default async function DashboardPage() {
         <StatCard title="Done This Week" value={doneThisWeek} subtitle="Completed recently" />
       </div>
 
+      <AdhocCounter tasks={tasks} />
       <ScopeCreepAlert tasks={tasks} />
       <TodaysPlan tasks={tasks} />
       <TriagePanel tasks={tasks} />
@@ -80,6 +83,8 @@ export default async function DashboardPage() {
       ) : (
         <TaskList tasks={tasks} />
       )}
+
+      <EodSummary />
     </div>
   )
 }
