@@ -15,7 +15,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { title, description, due_date, priority, status, blocked_on, source_text, source, time_estimate } = body
+  const { title, description, due_date, priority, status, blocked_on, source_text, source, time_estimate, is_adhoc_jeff } = body
 
   if (!title || typeof title !== 'string' || title.trim().length === 0) {
     return NextResponse.json({ error: 'title is required' }, { status: 400 })
@@ -24,9 +24,10 @@ export async function POST(req: NextRequest) {
   const validSources = ['fathom', 'slack', 'whatsapp', 'email', 'manual']
   const safeSource = validSources.includes(source) ? source : 'manual'
   const safeTimeEstimate = Number.isInteger(time_estimate) && time_estimate > 0 ? time_estimate : null
+  const safeIsAdhocJeff = typeof is_adhoc_jeff === 'boolean' ? is_adhoc_jeff : false
 
   const [task] = await sql`
-    INSERT INTO tasks (title, description, due_date, priority, status, blocked_on, source_text, source, time_estimate)
+    INSERT INTO tasks (title, description, due_date, priority, status, blocked_on, source_text, source, time_estimate, is_adhoc_jeff)
     VALUES (
       ${title.trim()},
       ${description ?? null},
@@ -36,7 +37,8 @@ export async function POST(req: NextRequest) {
       ${blocked_on ?? null},
       ${source_text ?? null},
       ${safeSource},
-      ${safeTimeEstimate}
+      ${safeTimeEstimate},
+      ${safeIsAdhocJeff}
     )
     RETURNING *
   `

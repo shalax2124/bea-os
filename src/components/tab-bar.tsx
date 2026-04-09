@@ -8,6 +8,7 @@ const tabs = [
   { name: 'Log Task', href: '/log-task' },
   { name: 'Jeff Tracker', href: '/jeff-tracker' },
   { name: 'Archive', href: '/archive' },
+  { name: 'Slack', href: '/slack-preview' },
 ]
 
 export function TabBar() {

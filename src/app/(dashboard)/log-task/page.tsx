@@ -12,6 +12,8 @@ type ExtractedTask = {
   blocked_on: string | null
   source: 'fathom' | 'slack' | 'whatsapp' | 'email' | 'manual'
   time_estimate: number | null
+  is_adhoc_jeff: boolean
+  owner: string | null
 }
 
 const PRIORITY_LABELS = { high: 'High', medium: 'Medium', low: 'Low' }
@@ -40,7 +42,7 @@ export default function LogTaskPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Extraction failed')
-      setTask(data.task)
+      setTask({ ...data.task, is_adhoc_jeff: false, owner: 'Bea (me)' })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
     } finally {
@@ -204,6 +206,30 @@ export default function LogTaskPage() {
                 value={task.blocked_on ?? ''}
                 onChange={(e) => setTask({ ...task, blocked_on: e.target.value || null })}
                 placeholder="e.g. Jeff, vendor"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Jeff added this?</label>
+              <select
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={task.is_adhoc_jeff ? 'true' : 'false'}
+                onChange={(e) => setTask({ ...task, is_adhoc_jeff: e.target.value === 'true' })}
+              >
+                <option value="false">No — planned</option>
+                <option value="true">Yes — ad hoc</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Owner</label>
+              <input
+                type="text"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={task.owner ?? ''}
+                onChange={(e) => setTask({ ...task, owner: e.target.value || null })}
+                placeholder="e.g. Bea (me)"
               />
             </div>
           </div>

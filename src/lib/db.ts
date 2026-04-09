@@ -29,4 +29,16 @@ export async function initDb() {
   await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS source TEXT CHECK (source IN ('fathom', 'slack', 'whatsapp', 'email', 'manual')) DEFAULT 'manual'`
   await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS time_estimate INT`
   await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS archived BOOLEAN NOT NULL DEFAULT FALSE`
+  await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS is_adhoc_jeff BOOLEAN NOT NULL DEFAULT FALSE`
+  await sql`
+    CREATE TABLE IF NOT EXISTS task_priority_log (
+      id SERIAL PRIMARY KEY,
+      task_id INT REFERENCES tasks(id) ON DELETE CASCADE,
+      changed_at TIMESTAMPTZ DEFAULT NOW(),
+      old_priority TEXT,
+      new_priority TEXT,
+      old_status TEXT,
+      new_status TEXT
+    )
+  `
 }

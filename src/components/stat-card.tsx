@@ -2,14 +2,16 @@ interface StatCardProps {
   title: string
   value: string | number
   subtitle?: string
+  detail?: string
 }
 
-export function StatCard({ title, value, subtitle }: StatCardProps) {
+export function StatCard({ title, value, subtitle, detail }: StatCardProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <p className="text-sm font-medium text-gray-500">{title}</p>
       <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
       {subtitle && <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>}
+      {detail && <p className="mt-0.5 text-xs text-gray-400">{detail}</p>}
     </div>
   )
 }
