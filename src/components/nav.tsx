@@ -22,7 +22,7 @@ export function Nav() {
         <h1 className="text-lg font-bold text-gray-900">Bea&apos;s OS</h1>
         <p className="text-xs text-gray-500">{getCurrentWeekLabel()}</p>
       </div>
-      <UserButton afterSignOutUrl="/sign-in" />
+      <UserButton />
     </nav>
   )
 }
