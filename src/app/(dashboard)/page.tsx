@@ -1,6 +1,9 @@
 import { sql } from '@/lib/db'
 import { StatCard } from '@/components/stat-card'
 import { TaskList } from '@/components/task-list'
+import { TodaysPlan } from '@/components/todays-plan'
+import { ScopeCreepAlert } from '@/components/scope-creep-alert'
+import { TriagePanel } from '@/components/triage-panel'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,6 +68,10 @@ export default async function DashboardPage() {
         <StatCard title="Blocked on Jeff" value={blockedOnJeff} subtitle="Waiting for response" />
         <StatCard title="Done This Week" value={doneThisWeek} subtitle="Completed recently" />
       </div>
+
+      <ScopeCreepAlert tasks={tasks} />
+      <TodaysPlan tasks={tasks} />
+      <TriagePanel tasks={tasks} />
 
       {tasks.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-400">

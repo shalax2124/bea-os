@@ -14,8 +14,8 @@ export function TabBar() {
   const pathname = usePathname()
 
   return (
-    <div className="border-b border-gray-200 bg-white">
-      <nav className="flex space-x-1 px-4 sm:px-6" aria-label="Tabs">
+    <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white md:hidden">
+      <nav className="flex" aria-label="Tabs">
         {tabs.map((tab) => {
           const isActive = tab.href === '/'
             ? pathname === '/'
@@ -24,10 +24,10 @@ export function TabBar() {
             <Link
               key={tab.name}
               href={tab.href}
-              className={`whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium ${
+              className={`flex-1 whitespace-nowrap px-2 py-3 text-center text-xs font-medium ${
                 isActive
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  ? 'text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               {tab.name}
