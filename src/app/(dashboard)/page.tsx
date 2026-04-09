@@ -18,7 +18,7 @@ type Task = {
 async function getTasks(): Promise<Task[]> {
   try {
     const tasks = await sql`
-      SELECT * FROM tasks
+      SELECT *, due_date::text AS due_date FROM tasks
       WHERE status != 'done'
       ORDER BY
         CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
