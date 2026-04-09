@@ -18,14 +18,17 @@ type Task = {
 async function getTasks(): Promise<Task[]> {
   try {
     const tasks = await sql`
-      SELECT *, due_date::text AS due_date FROM tasks
+      SELECT * FROM tasks
       WHERE status != 'done'
       ORDER BY
         CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
         due_date ASC NULLS LAST,
         created_at DESC
     `
-    return tasks as Task[]
+    return tasks.map((t) => ({
+      ...t,
+      due_date: t.due_date ? new Date(t.due_date).toISOString().split('T')[0] : null,
+    })) as Task[]
   } catch {
     return []
   }
