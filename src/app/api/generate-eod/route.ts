@@ -11,9 +11,12 @@ export async function POST() {
     sql`
       SELECT title FROM tasks
       WHERE status = 'done'
-      AND updated_at::date = CURRENT_DATE
+      AND (
+        updated_at >= NOW() - INTERVAL '24 hours'
+        OR created_at >= NOW() - INTERVAL '24 hours'
+      )
       AND archived = FALSE
-      ORDER BY updated_at DESC
+      ORDER BY COALESCE(updated_at, created_at) DESC
     `,
     sql`
       SELECT title, blocked_on FROM tasks
