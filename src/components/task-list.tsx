@@ -11,6 +11,8 @@ type Task = {
   priority: 'high' | 'medium' | 'low'
   status: 'todo' | 'in_progress' | 'blocked' | 'done'
   blocked_on: string | null
+  source: 'fathom' | 'slack' | 'whatsapp' | 'email' | 'manual' | null
+  time_estimate: number | null
   created_at: string
 }
 
@@ -32,6 +34,22 @@ const STATUS_LABELS = {
   in_progress: 'In Progress',
   blocked: 'Blocked',
   done: 'Done',
+}
+
+const SOURCE_COLORS: Record<string, string> = {
+  fathom: 'bg-purple-100 text-purple-700',
+  slack: 'bg-indigo-100 text-indigo-700',
+  whatsapp: 'bg-green-100 text-green-700',
+  email: 'bg-sky-100 text-sky-700',
+  manual: 'bg-gray-100 text-gray-500',
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  fathom: 'Fathom',
+  slack: 'Slack',
+  whatsapp: 'WhatsApp',
+  email: 'Email',
+  manual: 'Manual',
 }
 
 function isOverdue(dueDate: string | null): boolean {
@@ -98,6 +116,18 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
                   {task.blocked_on && (
                     <span className="text-xs text-orange-600">
                       Blocked on {task.blocked_on}
+                    </span>
+                  )}
+                  {task.source && task.source !== 'manual' && (
+                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${SOURCE_COLORS[task.source] ?? 'bg-gray-100 text-gray-500'}`}>
+                      {SOURCE_LABELS[task.source]}
+                    </span>
+                  )}
+                  {task.time_estimate && (
+                    <span className="text-xs text-gray-400">
+                      ~{task.time_estimate < 60
+                        ? `${task.time_estimate}m`
+                        : `${Math.round(task.time_estimate / 60 * 10) / 10}h`}
                     </span>
                   )}
                 </div>

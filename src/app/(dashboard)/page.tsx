@@ -10,6 +10,8 @@ type Task = {
   priority: 'high' | 'medium' | 'low'
   status: 'todo' | 'in_progress' | 'blocked' | 'done'
   blocked_on: string | null
+  source: 'fathom' | 'slack' | 'whatsapp' | 'email' | 'manual' | null
+  time_estimate: number | null
   created_at: string
 }
 

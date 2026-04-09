@@ -19,8 +19,13 @@ export async function initDb() {
       status TEXT CHECK (status IN ('todo', 'in_progress', 'blocked', 'done')) DEFAULT 'todo',
       blocked_on TEXT,
       source_text TEXT,
+      source TEXT CHECK (source IN ('fathom', 'slack', 'whatsapp', 'email', 'manual')) DEFAULT 'manual',
+      time_estimate INT,
       created_at TIMESTAMPTZ DEFAULT NOW(),
       updated_at TIMESTAMPTZ DEFAULT NOW()
     )
   `
+  // Migrate existing tables that predate these columns
+  await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS source TEXT CHECK (source IN ('fathom', 'slack', 'whatsapp', 'email', 'manual')) DEFAULT 'manual'`
+  await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS time_estimate INT`
 }

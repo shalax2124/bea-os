@@ -38,6 +38,8 @@ Return ONLY valid JSON with these exact fields:
 - priority: "high", "medium", or "low" based on urgency cues
 - status: "todo" (default), "in_progress", "blocked", or "done"
 - blocked_on: who/what is blocking this (e.g. "Jeff", "vendor"), or null
+- source: infer from text style — "fathom" (meeting notes/transcript), "slack" (chat messages), "whatsapp" (casual chat), "email" (formal email), "manual" (if unclear)
+- time_estimate: estimated minutes to complete this task as an integer (e.g. 15, 30, 60), or null if truly unknown
 
 Raw text:
 """

@@ -10,10 +10,13 @@ type ExtractedTask = {
   priority: 'high' | 'medium' | 'low'
   status: 'todo' | 'in_progress' | 'blocked' | 'done'
   blocked_on: string | null
+  source: 'fathom' | 'slack' | 'whatsapp' | 'email' | 'manual'
+  time_estimate: number | null
 }
 
 const PRIORITY_LABELS = { high: 'High', medium: 'Medium', low: 'Low' }
 const STATUS_LABELS = { todo: 'To Do', in_progress: 'In Progress', blocked: 'Blocked', done: 'Done' }
+const SOURCE_LABELS = { fathom: 'Fathom', slack: 'Slack', whatsapp: 'WhatsApp', email: 'Email', manual: 'Manual' }
 
 export default function LogTaskPage() {
   const router = useRouter()
@@ -202,6 +205,32 @@ export default function LogTaskPage() {
                 value={task.blocked_on ?? ''}
                 onChange={(e) => setTask({ ...task, blocked_on: e.target.value || null })}
                 placeholder="e.g. Jeff, vendor"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Source</label>
+              <select
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={task.source}
+                onChange={(e) => setTask({ ...task, source: e.target.value as ExtractedTask['source'] })}
+              >
+                {Object.entries(SOURCE_LABELS).map(([v, l]) => (
+                  <option key={v} value={v}>{l}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Time estimate (min)</label>
+              <input
+                type="number"
+                min="1"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={task.time_estimate ?? ''}
+                onChange={(e) => setTask({ ...task, time_estimate: e.target.value ? parseInt(e.target.value) : null })}
+                placeholder="e.g. 30"
               />
             </div>
           </div>
