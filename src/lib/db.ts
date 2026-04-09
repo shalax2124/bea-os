@@ -28,4 +28,5 @@ export async function initDb() {
   // Migrate existing tables that predate these columns
   await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS source TEXT CHECK (source IN ('fathom', 'slack', 'whatsapp', 'email', 'manual')) DEFAULT 'manual'`
   await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS time_estimate INT`
+  await sql`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS archived BOOLEAN NOT NULL DEFAULT FALSE`
 }

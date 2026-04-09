@@ -19,7 +19,7 @@ async function getTasks(): Promise<Task[]> {
   try {
     const tasks = await sql`
       SELECT * FROM tasks
-      WHERE status != 'done'
+      WHERE status != 'done' AND archived = FALSE
       ORDER BY
         CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
         due_date ASC NULLS LAST,

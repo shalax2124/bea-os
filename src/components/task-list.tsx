@@ -59,6 +59,7 @@ function isOverdue(dueDate: string | null): boolean {
 function TaskCard({ task }: { task: Task }) {
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [fields, setFields] = useState({
     title: task.title,
     due_date: task.due_date ?? '',
@@ -76,6 +77,22 @@ function TaskCard({ task }: { task: Task }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'done' }),
     })
+    window.location.reload()
+  }
+
+  async function handleArchive() {
+    setSaving(true)
+    await fetch(`/api/tasks/${task.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: true }),
+    })
+    window.location.reload()
+  }
+
+  async function handleDelete() {
+    setSaving(true)
+    await fetch(`/api/tasks/${task.id}`, { method: 'DELETE' })
     window.location.reload()
   }
 
@@ -226,14 +243,19 @@ function TaskCard({ task }: { task: Task }) {
           </div>
         </div>
 
-        {/* Edit button */}
-        <button
-          onClick={() => setEditing(true)}
-          className="flex-shrink-0 text-xs text-gray-400 hover:text-gray-600 px-1"
-          aria-label="Edit task"
-        >
-          Edit
-        </button>
+        {/* Actions */}
+        <div className="flex-shrink-0 flex flex-col items-end gap-1 text-xs">
+          <button onClick={() => setEditing(true)} className="text-gray-400 hover:text-gray-600">Edit</button>
+          <button onClick={handleArchive} disabled={saving} className="text-gray-400 hover:text-yellow-600 disabled:opacity-50">Archive</button>
+          {confirmDelete ? (
+            <div className="flex gap-1">
+              <button onClick={handleDelete} disabled={saving} className="text-red-600 font-medium hover:text-red-800 disabled:opacity-50">Confirm</button>
+              <button onClick={() => setConfirmDelete(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+          ) : (
+            <button onClick={() => setConfirmDelete(true)} className="text-gray-400 hover:text-red-500">Delete</button>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -4,7 +4,7 @@ import { sql } from '@/lib/db'
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const body = await req.json()
-  const { status, priority, title, description, due_date, blocked_on } = body
+  const { status, priority, title, description, due_date, blocked_on, archived } = body
 
   const [task] = await sql`
     UPDATE tasks SET
@@ -14,6 +14,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       priority = COALESCE(${priority ?? null}, priority),
       status = COALESCE(${status ?? null}, status),
       blocked_on = COALESCE(${blocked_on ?? null}, blocked_on),
+      archived = CASE WHEN ${archived ?? null} IS NOT NULL THEN ${archived ?? false} ELSE archived END,
       updated_at = NOW()
     WHERE id = ${parseInt(id)}
     RETURNING *
