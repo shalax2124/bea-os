@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db'
+import { runOverdueSnapshot } from '@/lib/snapshot'
 import { StatCard } from '@/components/stat-card'
 import { TaskList } from '@/components/task-list'
 import { TodaysPlan } from '@/components/todays-plan'
@@ -11,6 +12,7 @@ import { WeeklyTrend } from '@/components/weekly-trend'
 import { PriorityChanges } from '@/components/priority-changes'
 
 export const dynamic = 'force-dynamic'
+
 
 type Task = {
   id: number
@@ -95,6 +97,7 @@ export default async function DashboardPage() {
     getTasks(),
     getDoneThisWeek(),
     getDoneLastWeek(),
+    runOverdueSnapshot(),
   ])
 
   const today = new Date().toISOString().split('T')[0]

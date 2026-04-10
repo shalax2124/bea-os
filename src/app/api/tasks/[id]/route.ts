@@ -63,6 +63,26 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     `
   }
 
+  // Log meaningful status transitions to task_state_log
+  if (newStatus && newStatus !== oldStatus) {
+    const taskTitle = (task.title as string) ?? ''
+    type EventType = 'became_done' | 'became_blocked' | 'became_in_progress' | 'became_todo'
+    const eventMap: Record<string, EventType> = {
+      done: 'became_done',
+      blocked: 'became_blocked',
+      in_progress: 'became_in_progress',
+      todo: 'became_todo',
+    }
+    const eventType = eventMap[newStatus]
+    if (eventType) {
+      const details = `Was ${oldStatus}`
+      await sql`
+        INSERT INTO task_state_log (task_id, event_type, task_title, details)
+        VALUES (${numericId}, ${eventType}, ${taskTitle}, ${details})
+      `
+    }
+  }
+
   return NextResponse.json({ task })
 }
 

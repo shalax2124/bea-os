@@ -41,4 +41,16 @@ export async function initDb() {
       new_status TEXT
     )
   `
+  await sql`
+    CREATE TABLE IF NOT EXISTS task_state_log (
+      id SERIAL PRIMARY KEY,
+      task_id INT REFERENCES tasks(id) ON DELETE CASCADE,
+      event_type TEXT NOT NULL,
+      occurred_at TIMESTAMPTZ DEFAULT NOW(),
+      task_title TEXT NOT NULL,
+      details TEXT
+    )
+  `
+  await sql`CREATE INDEX IF NOT EXISTS idx_task_state_log_task_id ON task_state_log(task_id)`
+  await sql`CREATE INDEX IF NOT EXISTS idx_task_state_log_event_type ON task_state_log(event_type)`
 }

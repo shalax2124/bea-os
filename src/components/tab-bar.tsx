@@ -7,8 +7,8 @@ const tabs = [
   { name: 'Dashboard', href: '/' },
   { name: 'Log Task', href: '/log-task' },
   { name: 'Jeff Tracker', href: '/jeff-tracker' },
+  { name: 'History', href: '/history' },
   { name: 'Archive', href: '/archive' },
-  { name: 'Slack', href: '/slack-preview' },
 ]
 
 export function TabBar() {

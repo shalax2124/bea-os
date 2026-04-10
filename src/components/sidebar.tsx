@@ -9,6 +9,7 @@ const links = [
   { name: 'Dashboard', href: '/' },
   { name: 'Log Task', href: '/log-task' },
   { name: 'Jeff Tracker', href: '/jeff-tracker' },
+  { name: 'History', href: '/history' },
   { name: 'Archive', href: '/archive' },
   { name: 'Slack Preview', href: '/slack-preview' },
 ]
