@@ -1,5 +1,27 @@
 import { sql } from '@/lib/db'
 
+type ChangeRow = {
+  id: number
+  task_id: number
+  changed_at: string
+  old_priority: string | null
+  new_priority: string | null
+  old_status: string | null
+  new_status: string | null
+  title: string
+  source: string | null
+  is_adhoc_jeff: boolean | null
+}
+
+type NewTaskRow = {
+  id: number
+  title: string
+  source: string | null
+  is_adhoc_jeff: boolean | null
+  created_at: string
+  priority: string
+}
+
 function relativeDate(dateStr: string): string {
   const days = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000)
   if (days === 0) return 'today'
@@ -25,11 +47,11 @@ function SourcePill({ source }: { source: string }) {
 }
 
 export async function PriorityChanges() {
-  let changes: Record<string, unknown>[] = []
-  let newTasks: Record<string, unknown>[] = []
+  let changes: ChangeRow[] = []
+  let newTasks: NewTaskRow[] = []
 
   try {
-    changes = await sql`
+    changes = (await sql`
       SELECT
         pl.id,
         pl.task_id,
@@ -46,15 +68,15 @@ export async function PriorityChanges() {
       WHERE pl.changed_at >= NOW() - INTERVAL '7 days'
       ORDER BY pl.changed_at DESC
       LIMIT 15
-    `
+    `) as ChangeRow[]
 
-    newTasks = await sql`
+    newTasks = (await sql`
       SELECT id, title, source, is_adhoc_jeff, created_at, priority
       FROM tasks
       WHERE created_at >= NOW() - INTERVAL '7 days'
       AND archived = FALSE
       ORDER BY created_at DESC
-    `
+    `) as NewTaskRow[]
   } catch {
     // table may not exist yet — fail silently
   }
