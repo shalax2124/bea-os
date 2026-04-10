@@ -10,6 +10,7 @@ import { AdhocCounter } from '@/components/adhoc-counter'
 import { RequiresJeffPanel } from '@/components/requires-jeff-panel'
 import { WeeklyTrend } from '@/components/weekly-trend'
 import { PriorityChanges } from '@/components/priority-changes'
+import { DraftReviewPanel } from '@/components/draft-review-panel'
 
 export const dynamic = 'force-dynamic'
 
@@ -145,6 +146,9 @@ export default async function DashboardPage() {
       {/* Alerts */}
       <AdhocCounter tasks={tasks} />
       <ScopeCreepAlert tasks={tasks} />
+
+      {/* Draft tasks from Slack / Fathom */}
+      <DraftReviewPanel />
 
       {/* Triage */}
       <TriagePanel tasks={tasks} />

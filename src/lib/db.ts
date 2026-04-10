@@ -53,4 +53,27 @@ export async function initDb() {
   `
   await sql`CREATE INDEX IF NOT EXISTS idx_task_state_log_task_id ON task_state_log(task_id)`
   await sql`CREATE INDEX IF NOT EXISTS idx_task_state_log_event_type ON task_state_log(event_type)`
+
+  // Phase 5: draft tasks (Slack/Fathom staging area)
+  await sql`
+    CREATE TABLE IF NOT EXISTS draft_tasks (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      due_date DATE,
+      priority TEXT CHECK (priority IN ('high', 'medium', 'low')) DEFAULT 'medium',
+      source TEXT CHECK (source IN ('fathom', 'slack')) NOT NULL,
+      raw_text TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `
+
+  // Phase 5: track last Slack sync timestamp
+  await sql`
+    CREATE TABLE IF NOT EXISTS slack_sync_state (
+      id INT PRIMARY KEY DEFAULT 1,
+      last_synced_ts TEXT
+    )
+  `
+  await sql`INSERT INTO slack_sync_state (id) VALUES (1) ON CONFLICT DO NOTHING`
 }

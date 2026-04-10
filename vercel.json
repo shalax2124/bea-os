@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/slack/send-brief",
+      "schedule": "0 2 * * 1"
+    }
+  ]
+}
