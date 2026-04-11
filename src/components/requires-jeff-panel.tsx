@@ -23,34 +23,47 @@ export function RequiresJeffPanel({ tasks }: { tasks: Task[] }) {
     .slice(0, 6)
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-center gap-2">
-        <h3 className="text-sm font-semibold text-gray-900">Requires Jeff</h3>
-        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
-          {jeffTasks.length} open item{jeffTasks.length !== 1 ? 's' : ''}
+    <div className="border-2 border-ink bg-white h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-ink px-5 py-3">
+        <h3 className="text-[10px] font-black tracking-[0.18em] uppercase text-white">
+          Requires Jeff
+        </h3>
+        <span className={`text-[10px] font-black px-2 py-0.5 ${
+          jeffTasks.length > 0 ? 'bg-pink text-white animate-pulse-pink' : 'bg-white/10 text-white/60'
+        }`}>
+          {jeffTasks.length}
         </span>
       </div>
 
-      {jeffTasks.length === 0 ? (
-        <p className="text-sm text-green-600">No items waiting on Jeff</p>
-      ) : (
-        <ul className="space-y-3">
-          {jeffTasks.map((task) => {
-            const days = daysWaiting(task.created_at)
-            return (
-              <li key={task.id} className="flex flex-col gap-0.5">
-                <p className="text-sm font-medium text-gray-900">{task.title}</p>
-                {task.description && (
-                  <p className="line-clamp-2 text-xs text-gray-500">{task.description}</p>
-                )}
-                <p className="text-xs text-blue-600">
-                  Waiting {days} day{days !== 1 ? 's' : ''}
-                </p>
-              </li>
-            )
-          })}
-        </ul>
-      )}
+      <div className="px-5 py-4">
+        {jeffTasks.length === 0 ? (
+          <div className="py-4 text-center">
+            <p className="text-xs font-bold text-lime">All clear</p>
+            <p className="text-[10px] text-gray-400 mt-0.5">Nothing waiting on Jeff</p>
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-100">
+            {jeffTasks.map((task) => {
+              const days = daysWaiting(task.created_at)
+              const urgent = days >= 3
+              return (
+                <li key={task.id} className="py-3">
+                  <p className="text-sm font-bold text-ink leading-snug">{task.title}</p>
+                  {task.description && (
+                    <p className="mt-0.5 line-clamp-1 text-xs text-gray-400">{task.description}</p>
+                  )}
+                  <p className={`mt-1 text-[10px] font-black uppercase tracking-wider ${
+                    urgent ? 'text-pink' : 'text-gray-400'
+                  }`}>
+                    {days} day{days !== 1 ? 's' : ''} waiting{urgent ? ' — follow up' : ''}
+                  </p>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

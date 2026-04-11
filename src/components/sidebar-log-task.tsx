@@ -41,6 +41,9 @@ const sourceOptions: { label: string; value: Source }[] = [
   { label: 'Email', value: 'email' },
 ]
 
+const inputCls = 'text-xs border border-white/15 bg-white/8 text-white placeholder-white/30 px-2 py-1.5 w-full focus:outline-none focus:border-pink transition-colors'
+const labelCls = 'text-[9px] font-black text-white/35 tracking-[0.15em] uppercase block mb-1'
+
 export function SidebarLogTask() {
   const [mode, setMode] = useState<Mode>('smart')
   const [form, setForm] = useState<FormState>(defaultForm)
@@ -118,84 +121,67 @@ export function SidebarLogTask() {
 
   return (
     <div className="mt-2">
-      <hr className="border-gray-100 my-4" />
-      <p className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase mb-3">
-        Log a Task
-      </p>
+      <div className="border-t border-white/10 my-4" />
+      <p className={labelCls}>Log a Task</p>
 
-      {error && (
-        <p className="text-[10px] text-red-500 mb-2">{error}</p>
-      )}
+      {error && <p className="text-[10px] text-pink mb-2">{error}</p>}
 
       {success ? (
-        <p className="text-[10px] text-green-600 font-medium py-1">✓ Task added!</p>
+        <p className="text-[10px] font-black text-lime uppercase tracking-widest py-1">✓ Task added!</p>
       ) : (
         <>
-          {/* Smart Paste Mode */}
+          {/* Smart Paste */}
           {mode === 'smart' && (
             <div className="flex flex-col gap-2">
-              <p className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase">
-                Smart Paste
-              </p>
+              <p className={labelCls}>Smart Paste</p>
               <textarea
                 rows={3}
                 value={form.rawText}
                 onChange={(e) => updateField('rawText', e.target.value)}
-                placeholder="e.g. Paste a Fathom transcript, Slack message, WhatsApp chat... Claude will extract the task automatically."
-                className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full resize-none focus:outline-none focus:ring-1 focus:ring-blue-300"
+                placeholder="Paste a Fathom transcript, Slack message, email..."
+                className={`${inputCls} resize-none`}
               />
               <button
                 onClick={handleExtract}
                 disabled={extracting || !form.rawText.trim()}
-                className="text-xs bg-blue-600 text-white rounded-md px-3 py-1.5 w-full disabled:opacity-50 hover:bg-blue-700 transition-colors"
+                className="text-[10px] font-black uppercase tracking-widest bg-pink text-white px-3 py-2 w-full disabled:opacity-40 hover:opacity-80 transition-opacity"
               >
-                {extracting ? 'Extracting…' : 'Extract Task with Claude →'}
+                {extracting ? 'Extracting…' : 'Extract with Claude →'}
               </button>
               <button
                 onClick={() => setMode('manual')}
-                className="text-[10px] text-gray-400 hover:text-gray-600 text-center"
+                className="text-[9px] text-white/30 hover:text-white/60 text-center transition-colors"
               >
                 or fill in manually
               </button>
             </div>
           )}
 
-          {/* Manual / Review Mode */}
+          {/* Manual */}
           {mode === 'manual' && (
             <div className="flex flex-col gap-2">
-              {/* TASK */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Task
-                </label>
+                <label className={labelCls}>Task</label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => updateField('title', e.target.value)}
                   placeholder="Task name"
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-300"
+                  className={inputCls}
                 />
               </div>
 
-              {/* SOURCE */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Source
-                </label>
+                <label className={labelCls}>Source</label>
                 <div className="flex gap-1 flex-wrap">
                   {sourceOptions.map((opt) => (
                     <button
                       key={opt.value}
-                      onClick={() =>
-                        updateField(
-                          'source',
-                          form.source === opt.value ? 'manual' : opt.value
-                        )
-                      }
-                      className={`text-xs px-2 py-1 rounded-full border transition-colors ${
+                      onClick={() => updateField('source', form.source === opt.value ? 'manual' : opt.value)}
+                      className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 transition-colors ${
                         form.source === opt.value
-                          ? 'bg-gray-800 text-white border-gray-800'
-                          : 'border-gray-300 text-gray-500 hover:border-gray-400'
+                          ? 'bg-pink text-white'
+                          : 'border border-white/20 text-white/40 hover:border-white/40 hover:text-white/70'
                       }`}
                     >
                       {opt.label}
@@ -204,98 +190,79 @@ export function SidebarLogTask() {
                 </div>
               </div>
 
-              {/* OWNER */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Owner
-                </label>
+                <label className={labelCls}>Owner</label>
                 <input
                   type="text"
                   value={form.owner}
                   onChange={(e) => updateField('owner', e.target.value)}
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-300"
+                  className={inputCls}
                 />
               </div>
 
-              {/* PRIORITY */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Priority
-                </label>
+                <label className={labelCls}>Priority</label>
                 <select
                   value={priorityOptions.find((p) => p.value === form.priority)?.label ?? 'P2 — This week'}
                   onChange={(e) => {
                     const found = priorityOptions.find((p) => p.label === e.target.value)
                     if (found) updateField('priority', found.value)
                   }}
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-300 bg-white"
+                  className={`${inputCls} appearance-none`}
                 >
                   {priorityOptions.map((opt) => (
-                    <option key={opt.value} value={opt.label}>
+                    <option key={opt.value} value={opt.label} className="bg-ink text-white">
                       {opt.label}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* DUE DATE */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Due Date
-                </label>
+                <label className={labelCls}>Due Date</label>
                 <input
                   type="date"
                   value={form.due_date}
                   onChange={(e) => updateField('due_date', e.target.value)}
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-300"
+                  className={`${inputCls} [color-scheme:dark]`}
                 />
               </div>
 
-              {/* NOTES */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Notes <span className="font-normal normal-case">(optional)</span>
-                </label>
+                <label className={labelCls}>Notes <span className="font-normal normal-case opacity-60">(optional)</span></label>
                 <textarea
                   rows={2}
                   value={form.notes}
                   onChange={(e) => updateField('notes', e.target.value)}
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full resize-none focus:outline-none focus:ring-1 focus:ring-blue-300"
+                  className={`${inputCls} resize-none`}
                 />
               </div>
 
-              {/* JEFF ADDED THIS? */}
               <div>
-                <label className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mb-1">
-                  Jeff Added This?
-                </label>
+                <label className={labelCls}>Jeff Added This?</label>
                 <select
                   value={form.is_adhoc_jeff ? 'Yes — ad hoc' : 'No — planned'}
-                  onChange={(e) =>
-                    updateField('is_adhoc_jeff', e.target.value === 'Yes — ad hoc')
-                  }
-                  className="text-xs border border-gray-200 rounded-md px-2 py-1.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-300 bg-white"
+                  onChange={(e) => updateField('is_adhoc_jeff', e.target.value === 'Yes — ad hoc')}
+                  className={`${inputCls} appearance-none`}
                 >
-                  <option>No — planned</option>
-                  <option>Yes — ad hoc</option>
+                  <option className="bg-ink text-white">No — planned</option>
+                  <option className="bg-ink text-white">Yes — ad hoc</option>
                 </select>
               </div>
 
-              {/* SAVE */}
               <button
                 onClick={handleSave}
                 disabled={saving || !form.title.trim()}
-                className="text-xs bg-gray-900 text-white rounded-md px-3 py-1.5 w-full disabled:opacity-50 hover:bg-gray-700 transition-colors mt-1"
+                className="text-[10px] font-black uppercase tracking-widest bg-pink text-white px-3 py-2 w-full disabled:opacity-40 hover:opacity-80 transition-opacity mt-1"
               >
                 {saving ? 'Saving…' : '+ Add Task'}
               </button>
 
-              {/* Back to smart paste */}
               <button
                 onClick={() => setMode('smart')}
-                className="text-[10px] text-gray-400 hover:text-gray-600 text-center"
+                className="text-[9px] text-white/30 hover:text-white/60 text-center transition-colors"
               >
-                ← back to smart paste
+                ← smart paste
               </button>
             </div>
           )}

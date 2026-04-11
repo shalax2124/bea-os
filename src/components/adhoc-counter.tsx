@@ -21,12 +21,14 @@ export function AdhocCounter({ tasks }: { tasks: Task[] }) {
   })
 
   const count = jeffAdHocTasks.length
-
   if (count === 0) return null
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 text-sm text-amber-800 flex items-center gap-2">
-      ⚡ Jeff added {count} unplanned task{count > 1 ? 's' : ''} this week via Slack/WhatsApp
+    <div className="border-2 border-pink bg-pink px-4 py-3 flex items-center gap-3 animate-fade-up-1">
+      <span className="text-base">⚡</span>
+      <p className="text-xs font-bold text-white tracking-wide">
+        Jeff added {count} unplanned task{count > 1 ? 's' : ''} this week via Slack/WhatsApp
+      </p>
     </div>
   )
 }

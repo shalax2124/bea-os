@@ -2,8 +2,8 @@ import { UserButton } from '@clerk/nextjs'
 
 export function Nav() {
   return (
-    <nav className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 md:hidden">
-      <h1 className="text-base font-bold text-gray-900">Bea&apos;s OS</h1>
+    <nav className="flex items-center justify-between bg-ink px-5 py-4 md:hidden">
+      <h1 className="text-sm font-black tracking-[0.2em] text-white uppercase">Bea&apos;s OS</h1>
       <UserButton />
     </nav>
   )

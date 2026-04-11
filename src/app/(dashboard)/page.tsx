@@ -112,49 +112,59 @@ export default async function DashboardPage() {
   ).length
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">Dashboard</h2>
+    <div className="space-y-5">
+      {/* Page header */}
+      <div className="animate-fade-up">
+        <h2 className="text-[10px] font-black tracking-[0.2em] uppercase text-gray-400">
+          {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+        </h2>
+        <p className="mt-1 text-2xl font-black text-ink">Overview</p>
+      </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="animate-fade-up-1 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard
           title="Total Tasks"
           value={tasks.length}
-          subtitle="All active tasks"
-          detail={`↑${addedThisWeek} added this week`}
+          detail={`↑${addedThisWeek} this week`}
         />
         <StatCard
           title="Overdue"
           value={overdue}
-          subtitle="Past deadline"
           detail={oldestOverdueDetail ?? undefined}
+          accent={overdue > 0}
         />
         <StatCard
           title="Blocked on Jeff"
           value={blockedOnJeff}
-          subtitle="Waiting for response"
           detail={avgJeffWaitDetail ?? undefined}
+          accent={blockedOnJeff > 0}
         />
         <StatCard
           title="Done This Week"
           value={doneThisWeek}
-          subtitle="Completed recently"
           detail={doneLastWeek !== null ? `${doneLastWeek} last week` : undefined}
         />
       </div>
 
       {/* Alerts */}
-      <AdhocCounter tasks={tasks} />
-      <ScopeCreepAlert tasks={tasks} />
+      <div className="animate-fade-up-2 space-y-3">
+        <AdhocCounter tasks={tasks} />
+        <ScopeCreepAlert tasks={tasks} />
+      </div>
 
       {/* Draft tasks from Slack / Fathom */}
-      <DraftReviewPanel />
+      <div className="animate-fade-up-3">
+        <DraftReviewPanel />
+      </div>
 
       {/* Triage */}
-      <TriagePanel tasks={tasks} />
+      <div className="animate-fade-up-3">
+        <TriagePanel tasks={tasks} />
+      </div>
 
       {/* Two-column: Today's Plan + Requires Jeff */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+      <div className="animate-fade-up-4 grid grid-cols-1 gap-4 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <TodaysPlan tasks={tasks} />
         </div>
@@ -164,22 +174,27 @@ export default async function DashboardPage() {
       </div>
 
       {/* Two-column: Priority Changes + Weekly Trend */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="animate-fade-up-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PriorityChanges />
         <WeeklyTrend />
       </div>
 
       {/* Full task list */}
-      {tasks.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-400">
-          No active tasks. Go to <strong>Log Task</strong> to add your first one.
-        </div>
-      ) : (
-        <TaskList tasks={tasks} />
-      )}
+      <div className="animate-fade-up-6">
+        {tasks.length === 0 ? (
+          <div className="border-2 border-dashed border-gray-200 bg-white p-10 text-center">
+            <p className="text-[10px] font-black tracking-widest uppercase text-gray-300">No Active Tasks</p>
+            <p className="mt-1 text-xs text-gray-400">Go to Log Task to add your first one</p>
+          </div>
+        ) : (
+          <TaskList tasks={tasks} />
+        )}
+      </div>
 
       {/* EOD */}
-      <EodSummary />
+      <div className="animate-fade-up-6">
+        <EodSummary />
+      </div>
     </div>
   )
 }

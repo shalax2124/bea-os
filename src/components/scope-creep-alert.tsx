@@ -22,15 +22,17 @@ export function ScopeCreepAlert({ tasks }: { tasks: Task[] }) {
   const overflow = recentCount - displayTitles.length
 
   return (
-    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-      <p className="text-sm font-medium text-amber-800">
-        ⚠ Scope creep check: {recentCount} new task{recentCount > 1 ? 's' : ''} added in the last
-        24 hours
-      </p>
-      <p className="mt-1 text-xs text-amber-700">
-        {displayTitles.join(', ')}
-        {overflow > 0 && ` +${overflow} more`}
-      </p>
+    <div className="border-2 border-ink bg-white px-4 py-3 flex items-start gap-3 animate-fade-up-2">
+      <span className="text-base mt-0.5">⚠</span>
+      <div>
+        <p className="text-xs font-black text-ink uppercase tracking-wide">
+          Scope check — {recentCount} new task{recentCount > 1 ? 's' : ''} in 24h
+        </p>
+        <p className="mt-0.5 text-xs text-gray-500">
+          {displayTitles.join(' · ')}
+          {overflow > 0 && ` +${overflow} more`}
+        </p>
+      </div>
     </div>
   )
 }
